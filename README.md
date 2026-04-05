@@ -27,33 +27,6 @@ Create these resources **in order**:
 ## Copy Pipeline
 In **Azure Data Factory Studio**:
 - Create linked service **(called ls_sql)** for on-prem SQL Server with SQL authentication.
-    ```sql
-    -- Step 1: Drop existing user and login if they exist
-    USE [vib-data];
-    IF EXISTS (SELECT name FROM sys.database_principals WHERE name = 'adf_user')
-        DROP USER adf_user;
-
-    USE [master];
-    IF EXISTS (SELECT name FROM sys.server_principals WHERE name = 'adf_user')
-        DROP LOGIN adf_user;
-
-    -- Step 2: Create server login
-    CREATE LOGIN adf_user 
-    WITH PASSWORD = 'Admin123@',
-    CHECK_POLICY = OFF,
-    CHECK_EXPIRATION = OFF;
-
-    -- Step 3: Enable the login
-    ALTER LOGIN adf_user ENABLE;
-
-    -- Step 4: Create user in vib-data database
-    USE [vib-data];
-    CREATE USER adf_user FOR LOGIN adf_user;
-
-    -- Step 5: Grant permissions
-    ALTER ROLE db_datareader ADD MEMBER adf_user;
-    ALTER ROLE db_datawriter ADD MEMBER adf_user;
-    ```
 - Create linked service **(called ls_adls)** for ADLS Gen2
 - Create **Copy All Data Pipeline** (dynamically loop all tables) 
     - Lookup
@@ -66,4 +39,16 @@ In **Azure Data Factory Studio**:
     ``` @activity('lookup-all-tables').output.value ```
     - Copy data (insisde ForEach): **source** using ls_adls and **sink** using ls_adls. Dynamic query: ``` @concat('SELECT * FROM ', item().TABLE_NAME) ```
 
+# 2. Data transformation
+- Create Databricks cluster
+- Mount Azure Data Lake Storage Gen2 in Databricks
+- Bronze → Silver notebook
+- Silver → Gold notebook (store Gold data in Delta format)
+- Integrate notebooks into ADF pipeline
 
+# 3. Data loading
+- Create a linked service in Synapse for ADLS Gen2
+- Create a Synapse Pipeline that:
+    - Retrieves table names from the Gold folder
+    - Executes a Stored Procedure for each table
+    - Creates/updates Views in the Serverless SQL pool (point to Gold files)

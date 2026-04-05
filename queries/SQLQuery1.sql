@@ -1,1 +1,0 @@
-select * from [Credit].[dbo].member
