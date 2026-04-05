@@ -52,3 +52,14 @@ In **Azure Data Factory Studio**:
     - Retrieves table names from the Gold folder
     - Executes a Stored Procedure for each table
     - Creates/updates Views in the Serverless SQL pool (point to Gold files)
+
+# 4. Data reporting
+- Install Microsoft Power BI
+- Connect to Azure Synapse Analytics SQL
+- Create a new dashboard
+
+# 5. End-to-end pipeline testing
+- Create scheduled trigger in ADF (daily)
+- Test full pipeline run (extract → load → transform)
+- Verify Power BI dashboard refreshes correctly
+[Pipeline testing](docs/pipeline_testing.png)
