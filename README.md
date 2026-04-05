@@ -62,4 +62,4 @@ In **Azure Data Factory Studio**:
 - Create scheduled trigger in ADF (daily)
 - Test full pipeline run (extract → load → transform)
 - Verify Power BI dashboard refreshes correctly
-[Pipeline testing](docs/pipeline_testing.png)
+![Pipeline testing](docs/pipeline_testing.png)
